@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Кнопка с переключаемыми иконками</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.6.1/font/bootstrap-icons.min.css">
+  <style>
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    
+    .icon-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 96px;
+      height: 96px;
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+    }
+    
+    .icon {
+      font-size: 48px;
+    }
+  </style>
+</head>
+<body>
+  <button id="toggleButton" class="icon-button">
+    <i id="icon" class="bi bi-arrow-down-left-circle"></i>
+  </button>
+
+  <script>
+    var toggleButton = document.getElementById("toggleButton");
+    var icon = document.getElementById("icon");
+    var isIcon01Visible = true;
+
+    toggleButton.addEventListener("click", function() {
+      if (isIcon01Visible) {
+        icon.classList.remove("bi-arrow-down-left-circle");
+        icon.classList.add("bi-arrow-down-left-circle-fill");
+        isIcon01Visible = false;
+      } else {
+        icon.classList.remove("bi-arrow-down-left-circle-fill");
+        icon.classList.add("bi-arrow-down-left-circle");
+        isIcon01Visible = true;
+      }
+    });
+  </script>
+</body>
+</html>
+

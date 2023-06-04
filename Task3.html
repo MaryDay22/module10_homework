@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Простой чат с эхо-сервером</title>
+  <style>
+    .chat {
+      width: 400px;
+      margin: 20px auto;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+    
+    .message {
+      margin-bottom: 10px;
+    }
+    
+    .location {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat">
+    <div id="messages"></div>
+    <input type="text" id="messageInput" placeholder="Введите сообщение">
+    <button id="sendMessageButton">Отправить</button>
+    <button id="sendLocationButton">Гео-локация</button>
+  </div>
+
+  <script>
+    const socket = new WebSocket("wss://echo-ws-service.herokuapp.com");
+
+    socket.onmessage = function(event) {
+      displayMessage(event.data);
+    };
+
+    document.getElementById("sendMessageButton").addEventListener("click", function() {
+      const messageInput = document.getElementById("messageInput");
+      const message = messageInput.value.trim();
+      
+      if (message !== "") {
+        socket.send(message);
+        displayMessage(message);
+        messageInput.value = "";
+      }
+    });
+
+    document.getElementById("sendLocationButton").addEventListener("click", function() {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          const locationUrl = `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}&zoom=16`;
+
+          displayLocation(locationUrl);
+          socket.send(JSON.stringify({ latitude, longitude }));
+        });
+      } else {
+        alert("Гео-локация не поддерживается вашим браузером.");
+      }
+    });
+
+    function displayMessage(message) {
+      const messagesDiv = document.getElementById("messages");
+      const messageDiv = document.createElement("div");
+      messageDiv.className = "message";
+      messageDiv.textContent = message;
+      messagesDiv.appendChild(messageDiv);
+    }
+
+    function displayLocation(locationUrl) {
+      const messagesDiv = document.getElementById("messages");
+      const locationDiv = document.createElement("div");
+      locationDiv.className = "location";
+      const locationLink = document.createElement("a");
+      locationLink.href = locationUrl;
+      locationLink.textContent = "Моя гео-локация";
+      locationDiv.appendChild(locationLink);
+      messagesDiv.appendChild(locationDiv);
+    }
+  </script>
+</body>
+</html>
